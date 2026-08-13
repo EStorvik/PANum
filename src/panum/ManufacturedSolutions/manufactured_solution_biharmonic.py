@@ -23,13 +23,31 @@ class ManufacturedSolutionBiharmonic:
         """Initialize the manufactured solution.
 
         Args:
-            parameters: Biharmonic equation parameters, used for the mobility ``m``.
+            parameters: Biharmonic equation parameters, used for the mobility
+                ``m`` and the initial time ``t0``.
         """
         self.m = parameters.m
+        self.t0 = parameters.t0
 
     def phi(self, x: ArrayOrFloat, y: ArrayOrFloat, t: ArrayOrFloat) -> ArrayOrFloat:
         """Evaluate the order parameter phi(x, y, t)."""
         return t * np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y)
+
+    def phi0(self, x: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
+        """Initial phase field phi(x, y, t0), callable for FEniCSx/UFL interpolation.
+
+        Matches the signature expected by ``dolfinx.fem.Function.interpolate``:
+        a callable taking the point coordinates ``x`` with shape
+        ``(gdim, num_points)`` and returning the corresponding values.
+
+        Args:
+            x: Point coordinates, with ``x[0]`` and ``x[1]`` the x- and
+                y-components respectively.
+
+        Returns:
+            The values of ``phi`` at ``t = t0``, with shape ``(num_points,)``.
+        """
+        return self.phi(x[0], x[1], self.t0)
 
     def mu(self, x: ArrayOrFloat, y: ArrayOrFloat, t: ArrayOrFloat) -> ArrayOrFloat:
         """Evaluate the chemical potential mu(x, y, t) = -Delta phi(x, y, t)."""

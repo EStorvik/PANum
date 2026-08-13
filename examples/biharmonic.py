@@ -22,4 +22,8 @@ msh: Mesh = mesh.create_unit_square(
 manuf_sol = pn.ManufacturedSolutionBiharmonic(parameters)
 
 
+# FEMHandler
+pn.FEMHandlerBiharmonic(msh, parameters, initialcondition = manuf_sol.phi0)
+
+
 

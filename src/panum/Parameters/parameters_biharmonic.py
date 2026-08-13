@@ -16,6 +16,7 @@ class ParametersBiharmonic:
         self,
         nx: int = 16,
         ny: int = 16,
+        finite_element_degree: int =1,
         num_time_steps: int = 100,
         T: float = 1,
         t0: float = 0,
@@ -32,6 +33,7 @@ class ParametersBiharmonic:
             m: mobility parameter.
         """
         self.nx, self.ny = nx, ny
+        self.finite_element_degree = finite_element_degree
         self.num_time_steps = num_time_steps
         self.T = T
         self.t0 = t0
