@@ -1,2 +1,6 @@
 numpy
 matplotlib
+
+# optional, for panum.PyvistaVizualization / PyvistaPlotCallback
+pyvista
+pyvistaqt

@@ -21,6 +21,10 @@ dev = [
     "flake8>=4.0",
     "mypy>=0.950",
 ]
+viz = [
+    "pyvista",
+    "pyvistaqt",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -49,5 +53,7 @@ module = [
     "petsc4py.*",
     "mpi4py.*",
     "matplotlib.*",
+    "pyvista.*",
+    "pyvistaqt.*",
 ]
 ignore_missing_imports = true

@@ -1,11 +1,17 @@
-from typing import Union
+from typing import TYPE_CHECKING, Union
 
 import numpy as np
 import numpy.typing as npt
+import ufl
+from ufl.core.expr import Expr as UFLExpr
 
 from ..Parameters import ParametersBiharmonic
 
+if TYPE_CHECKING:
+    from dolfinx.fem import Constant
+
 ArrayOrFloat = Union[float, npt.NDArray[np.floating]]
+UFLScalar = Union[float, "Constant", UFLExpr]
 
 
 class ManufacturedSolutionBiharmonic:
@@ -57,5 +63,33 @@ class ManufacturedSolutionBiharmonic:
         """Evaluate the source term f = partial_t phi + m * Delta^2 phi."""
         return np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y) + self.m * t * 4 * (2 * np.pi) ** 4 * (
             np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y)
+        )
+
+    def f_ufl(self, x: UFLExpr, y: UFLExpr, t: UFLScalar) -> UFLExpr:
+        """Evaluate f = partial_t phi + m * Delta^2 phi symbolically, for use in a UFL form.
+
+        Same formula as `f`, built with `ufl.cos`/`ufl.pi` instead of their
+        numpy counterparts so it can be assembled into a variational form.
+        Typical usage in a time loop, where the form is built once and only
+        the `dolfinx.fem.Constant` time values are updated each step (so the
+        form does not need to be recompiled):
+
+            x_ufl = ufl.SpatialCoordinate(msh)
+            t = fem.Constant(msh, default_scalar_type(t0))
+            t_old = fem.Constant(msh, default_scalar_type(t0))
+            f_n = manuf.f_ufl(x_ufl[0], x_ufl[1], t)
+            f_n_old = manuf.f_ufl(x_ufl[0], x_ufl[1], t_old)
+            # each step: t_old.value = t.value; t.value += dt
+
+        Args:
+            x: x-component of the spatial coordinate, e.g. `ufl.SpatialCoordinate(msh)[0]`.
+            y: y-component of the spatial coordinate, e.g. `ufl.SpatialCoordinate(msh)[1]`.
+            t: Time at which to evaluate f, e.g. a `dolfinx.fem.Constant`.
+
+        Returns:
+            The UFL expression for f(x, y, t).
+        """
+        return ufl.cos(2 * ufl.pi * x) * ufl.cos(2 * ufl.pi * y) + self.m * t * 4 * (2 * ufl.pi) ** 4 * (
+            ufl.cos(2 * ufl.pi * x) * ufl.cos(2 * ufl.pi * y)
         )
 
