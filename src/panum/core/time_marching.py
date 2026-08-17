@@ -1,7 +1,6 @@
-
 from typing import Any, Callable, List, Optional
 
-from .time_integrator import TimeIntegrator
+from .time_discretization import TimeIntegrator
 
 # Called after each time step as callback(step, time_integrator, femhandler).
 Callback = Callable[[int, TimeIntegrator, Any], None]

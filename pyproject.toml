@@ -31,7 +31,7 @@ where = ["src"]
 include = ["panum*"]
 
 [tool.black]
-line-length = 88
+line-length = 79
 
 [tool.mypy]
 python_version = "3.13"

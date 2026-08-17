@@ -1,7 +1,7 @@
 """PyVista-based visualization for FEniCSx solutions."""
 
 import pyvista as pv
-import pyvistaqt as pvqt  # type: ignore[import-untyped]
+import pyvistaqt as pvqt
 from dolfinx import plot
 
 if pv.OFF_SCREEN:
@@ -75,7 +75,14 @@ class PyvistaPlotCallback:
     call as `callback(step, time_integrator, femhandler)`.
     """
 
-    def __init__(self, femhandler, parameters, component: int = 0, name: str = "phi", every: int = 1) -> None:
+    def __init__(
+        self,
+        femhandler,
+        parameters,
+        component: int = 0,
+        name: str = "phi",
+        every: int = 1,
+    ) -> None:
         """Initialize the plot window for the given solution component.
 
         Args:
@@ -87,7 +94,10 @@ class PyvistaPlotCallback:
             every: Only update the plot every `every` time steps.
         """
         self.viz = PyvistaVizualization(
-            femhandler.V.sub(component), femhandler.xi, parameters.t0, name=name
+            femhandler.V.sub(component),
+            femhandler.xi,
+            parameters.t0,
+            name=name,
         )
         self.every = every
 

@@ -1,4 +1,3 @@
-
 from typing import TYPE_CHECKING, Callable
 
 import numpy as np
@@ -10,15 +9,18 @@ from ufl import Argument, split, TestFunction
 from ufl.core.expr import Expr as UFLExpr
 import panum as pn
 
-from ..Parameters import ParametersBiharmonic
+from ...core.femhandler import FEMHandlerBase
+from .parameters import ParametersBiharmonic
 
 if TYPE_CHECKING:
     from dolfinx.mesh import Mesh
 
-InitialCondition = Callable[[npt.NDArray[np.floating]], npt.NDArray[np.floating]]
+InitialCondition = Callable[
+    [npt.NDArray[np.floating]], npt.NDArray[np.floating]
+]
 
 
-class FEMHandlerBiharmonic:
+class FEMHandlerBiharmonic(FEMHandlerBase):
     """Finite element handler for the biharmonic (Cahn-Hilliard-type) equation.
 
     Builds the mixed function space for the phase field ``pf`` and chemical
@@ -54,7 +56,9 @@ class FEMHandlerBiharmonic:
             initialcondition: Callable ``x -> values`` used to interpolate the
                 initial phase field, as accepted by ``Function.interpolate``.
         """
-        P = element("Lagrange", msh.basix_cell(), parameters.finite_element_degree)
+        P = element(
+            "Lagrange", msh.basix_cell(), parameters.finite_element_degree
+        )
         ME = mixed_element([P, P])
 
         # Function spaces
@@ -83,9 +87,7 @@ class FEMHandlerBiharmonic:
         self.xi.x.scatter_forward()
 
         # Initialize mu from phi
-        mu0: UFLExpr = pn.initial_mu_biharmonic(
-            self.pf, P, msh
-        )
+        mu0: UFLExpr = pn.initial_mu_biharmonic(self.pf, P, msh)
 
         self.xi.sub(1).interpolate(mu0)
         self.xi.x.scatter_forward()

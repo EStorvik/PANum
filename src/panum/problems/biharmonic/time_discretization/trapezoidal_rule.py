@@ -1,23 +1,24 @@
+from typing import cast, Optional
 
-from typing import Optional
-
-import ufl
 from dolfinx.fem.petsc import NonlinearProblem
-from ufl import Form, dx, inner, grad
+from ufl import Form, dx
 
-from ..FEMHandler import FEMHandlerBiharmonic
-from ..ManufacturedSolutions import ManufacturedSolutionBiharmonic
-from ..Parameters import ParametersBiharmonic
-from .time_integrator import TimeIntegrator
+from panum.core.time_discretization import TimeIntegrator
+
+from ..femhandler import FEMHandlerBiharmonic
+from ..manufactured_solution import ManufacturedSolutionBiharmonic
+from ..parameters import ParametersBiharmonic
+from ..weak_form import BiharmonicWeakForm
 
 
 class TrapezoidalRuleBiharmonic(TimeIntegrator):
     """Trapezoidal-rule (Crank-Nicolson) time discretization of the biharmonic system.
 
-    Builds the mixed variational form for ``phi`` and ``mu``:
+    Averages the scheme-agnostic `BiharmonicWeakForm` flux/forcing term
+    between the old and new time levels:
 
-        (phi - phi_old) / dt * eta_pf * dx + m * grad((mu + mu_old) / 2) . grad(eta_pf) * dx
-            = (f(t) + f(t_old)) / 2 * eta_pf * dx      (only if a manufactured solution is given)
+        (phi - phi_old) / dt * eta_pf * dx + (flux(t) + flux(t_old)) / 2
+            = 0
 
         mu * eta_mu * dx - grad(phi) . grad(eta_mu) * dx = 0
 
@@ -44,19 +45,9 @@ class TrapezoidalRuleBiharmonic(TimeIntegrator):
         super().__init__(femhandler.V.mesh, parameters)
 
         self.femhandler = femhandler
-        self.pf = femhandler.pf
-        self.mu = femhandler.mu
-        self.pf_old = femhandler.pf_old
-        self.mu_old = femhandler.mu_old
-        self.eta_pf = femhandler.eta_pf
-        self.eta_mu = femhandler.eta_mu
-        self.manuf = manuf
-
-        msh = femhandler.V.mesh
-        if manuf is not None:
-            x = ufl.SpatialCoordinate(msh)
-            self.f_n = manuf.f_ufl(x[0], x[1], self.t)
-            self.f_n_old = manuf.f_ufl(x[0], x[1], self.t_old)
+        self.weak_form = BiharmonicWeakForm(
+            femhandler.V.mesh, parameters.m, manuf
+        )
 
         # Build forms on initialization
         self._build_forms()
@@ -66,7 +57,6 @@ class TrapezoidalRuleBiharmonic(TimeIntegrator):
             petsc_options_prefix="biharmonic_trapezoidal_rule_",
             petsc_options=parameters.petsc_options,
         )
-
 
     def solve_time_step(self) -> None:
         """Solve the nonlinear problem for `xi` and copy it into `xi_old` for the next step."""
@@ -81,14 +71,17 @@ class TrapezoidalRuleBiharmonic(TimeIntegrator):
         self.F: Form = self.F_pf + self.F_mu
 
     def _build_F_pf(self) -> Form:
-        F_pf = (
-            inner(self.pf - self.pf_old, self.eta_pf) / self.parameters.dt * dx
-            + self.parameters.m * inner(grad((self.mu + self.mu_old) / 2), grad(self.eta_pf)) * dx
-        )
-        if self.manuf is not None:
-            F_pf -= inner((self.f_n + self.f_n_old) / 2, self.eta_pf) * dx
-        return F_pf
+        fh = self.femhandler
+        wf = self.weak_form
+        integrand = (
+            wf.mass_form(fh.pf, fh.eta_pf) - wf.mass_form(fh.pf_old, fh.eta_pf)
+        ) / self.parameters.dt
+        integrand += (
+            wf.flux_form(fh.mu, fh.eta_pf, self.t)
+            + wf.flux_form(fh.mu_old, fh.eta_pf, self.t_old)
+        ) / 2
+        return cast(Form, integrand * dx)
 
     def _build_F_mu(self) -> Form:
-        return inner(self.mu, self.eta_mu) * dx - inner(grad(self.pf), grad(self.eta_mu)) * dx
-
+        fh = self.femhandler
+        return cast(Form, self.weak_form.mu_form(fh.pf, fh.mu, fh.eta_mu) * dx)

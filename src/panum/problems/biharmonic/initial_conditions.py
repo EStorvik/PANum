@@ -1,14 +1,10 @@
-
-
-
 """Phase field smoothing from initial condition."""
 
 from typing import TYPE_CHECKING, Any, cast
 
-import ch_timedisc as ch
 from ufl import grad, inner
 from dolfinx.fem import Function, functionspace
-from ufl import TestFunction, TrialFunction, dx, split
+from ufl import TestFunction, TrialFunction, dx
 from dolfinx.fem.petsc import LinearProblem
 from ufl.core.expr import Expr as UFLExpr
 
@@ -37,7 +33,6 @@ def initial_mu_biharmonic(
     V = functionspace(msh, P)
     u = TrialFunction(V)
     v = TestFunction(V)
-
 
     a = inner(u, v) * dx
     L = inner(grad(pf0), grad(v)) * dx

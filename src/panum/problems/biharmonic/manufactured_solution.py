@@ -1,11 +1,11 @@
-from typing import TYPE_CHECKING, Union
+from typing import cast, TYPE_CHECKING, Union
 
 import numpy as np
 import numpy.typing as npt
 import ufl
 from ufl.core.expr import Expr as UFLExpr
 
-from ..Parameters import ParametersBiharmonic
+from .parameters import ParametersBiharmonic
 
 if TYPE_CHECKING:
     from dolfinx.fem import Constant
@@ -35,9 +35,13 @@ class ManufacturedSolutionBiharmonic:
         self.m = parameters.m
         self.t0 = parameters.t0
 
-    def phi(self, x: ArrayOrFloat, y: ArrayOrFloat, t: ArrayOrFloat) -> ArrayOrFloat:
+    def phi(
+        self, x: ArrayOrFloat, y: ArrayOrFloat, t: ArrayOrFloat
+    ) -> ArrayOrFloat:
         """Evaluate the order parameter phi(x, y, t)."""
-        return t * np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y)
+        return cast(
+            ArrayOrFloat, t * np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y)
+        )
 
     def phi0(self, x: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
         """Initial phase field phi(x, y, t0), callable for FEniCSx/UFL interpolation.
@@ -53,16 +57,32 @@ class ManufacturedSolutionBiharmonic:
         Returns:
             The values of ``phi`` at ``t = t0``, with shape ``(num_points,)``.
         """
-        return self.phi(x[0], x[1], self.t0)
+        return cast(npt.NDArray[np.floating], self.phi(x[0], x[1], self.t0))
 
-    def mu(self, x: ArrayOrFloat, y: ArrayOrFloat, t: ArrayOrFloat) -> ArrayOrFloat:
+    def mu(
+        self, x: ArrayOrFloat, y: ArrayOrFloat, t: ArrayOrFloat
+    ) -> ArrayOrFloat:
         """Evaluate the chemical potential mu(x, y, t) = -Delta phi(x, y, t)."""
-        return t * 2 * (2 * np.pi) ** 2 * (np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y))
+        return cast(
+            ArrayOrFloat,
+            t
+            * 2
+            * (2 * np.pi) ** 2
+            * (np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y)),
+        )
 
-    def f(self, x: ArrayOrFloat, y: ArrayOrFloat, t: ArrayOrFloat) -> ArrayOrFloat:
+    def f(
+        self, x: ArrayOrFloat, y: ArrayOrFloat, t: ArrayOrFloat
+    ) -> ArrayOrFloat:
         """Evaluate the source term f = partial_t phi + m * Delta^2 phi."""
-        return np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y) + self.m * t * 4 * (2 * np.pi) ** 4 * (
+        return cast(
+            ArrayOrFloat,
             np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y)
+            + self.m
+            * t
+            * 4
+            * (2 * np.pi) ** 4
+            * (np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y)),
         )
 
     def f_ufl(self, x: UFLExpr, y: UFLExpr, t: UFLScalar) -> UFLExpr:
@@ -89,7 +109,12 @@ class ManufacturedSolutionBiharmonic:
         Returns:
             The UFL expression for f(x, y, t).
         """
-        return ufl.cos(2 * ufl.pi * x) * ufl.cos(2 * ufl.pi * y) + self.m * t * 4 * (2 * ufl.pi) ** 4 * (
+        return cast(
+            UFLExpr,
             ufl.cos(2 * ufl.pi * x) * ufl.cos(2 * ufl.pi * y)
+            + self.m
+            * t
+            * 4
+            * (2 * ufl.pi) ** 4
+            * (ufl.cos(2 * ufl.pi * x) * ufl.cos(2 * ufl.pi * y)),
         )
-
