@@ -4,11 +4,11 @@ import os
 os.environ["FI_PROVIDER"] = "tcp"
 os.environ["MPICH_OFI_STARTUP_CONNECT"] = "0"
 
-from dolfinx import mesh
-from dolfinx.mesh import Mesh
+from dolfinx import mesh  # noqa: E402
+from dolfinx.mesh import Mesh  # noqa: E402
 
-from mpi4py import MPI
-import panum as pn
+from mpi4py import MPI  # noqa: E402
+import panum as pn  # noqa: E402
 
 
 parameters = pn.ParametersBiharmonic(T=2e-4, num_time_steps=20)
