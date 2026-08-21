@@ -14,6 +14,10 @@ authors = [
 ]
 dependencies = [
     "numpy",
+    "fenics-dolfinx",
+    "cffi",
+    "fenics-basix",
+    "fenics-ffcx",
 ]
 
 [project.optional-dependencies]
