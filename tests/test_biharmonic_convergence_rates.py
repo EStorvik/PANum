@@ -1,8 +1,7 @@
 import os
-from importlib.machinery import SourceFileLoader
-from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 from types import ModuleType
+import runpy
 
 import pytest
 
@@ -13,14 +12,13 @@ def load_module() -> ModuleType:
         / "examples"
         / "biharmonic_convergence_rates.py"
     )
-    spec = spec_from_file_location("biharmonic_convergence_rates", module_path)
-    assert spec is not None
-    assert isinstance(spec.loader, SourceFileLoader)
-    module = module_from_spec(spec)
+    module = ModuleType("biharmonic_convergence_rates")
     original_fi_provider = os.environ.get("FI_PROVIDER")
     original_startup_connect = os.environ.get("MPICH_OFI_STARTUP_CONNECT")
     try:
-        spec.loader.exec_module(module)
+        module.__dict__.update(
+            runpy.run_path(str(module_path), run_name=module.__name__)
+        )
     finally:
         restore_env("FI_PROVIDER", original_fi_provider)
         restore_env("MPICH_OFI_STARTUP_CONNECT", original_startup_connect)
