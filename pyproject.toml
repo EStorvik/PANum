@@ -12,7 +12,9 @@ license = {file = "LICENSE"}
 authors = [
     {name = "Erlend Storvik", email = "erlend.storvik@hvl.no"}
 ]
-dependencies = []
+dependencies = [
+    numpy,
+]
 
 [project.optional-dependencies]
 dev = [
