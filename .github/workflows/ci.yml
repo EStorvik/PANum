@@ -19,14 +19,13 @@ jobs:
       - name: Flake8
         run: flake8 src
 
+
   test:
     runs-on: ubuntu-latest
+    container: dolfinx/dolfinx:stable
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
-      - name: Install test tools
-        run: pip install pytest
+      - name: Install panum and pytest
+        run: pip install -e . pytest
       - name: Run tests
         run: pytest

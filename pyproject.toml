@@ -12,7 +12,13 @@ license = {file = "LICENSE"}
 authors = [
     {name = "Erlend Storvik", email = "erlend.storvik@hvl.no"}
 ]
-dependencies = []
+dependencies = [
+    "numpy",
+    "fenics-dolfinx",
+    "cffi",
+    "fenics-basix",
+    "fenics-ffcx",
+]
 
 [project.optional-dependencies]
 dev = [
