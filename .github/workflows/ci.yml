@@ -11,13 +11,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.13"
       - name: Install lint tools
         run: pip install black flake8
       - name: Black
-        run: black --check .
+        run: black --check src
       - name: Flake8
-        run: flake8 .
+        run: flake8 src
 
   test:
     runs-on: ubuntu-latest
@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.13"
       - name: Install test tools
         run: pip install pytest
       - name: Run tests
