@@ -19,16 +19,13 @@ jobs:
       - name: Flake8
         run: flake8 src
 
+
   test:
     runs-on: ubuntu-latest
     container: dolfinx/dolfinx:stable
     steps:
       - uses: actions/checkout@v4
       - name: Install panum and pytest
-        run: |
-          python3 -m venv --system-site-packages .venv
-          . .venv/bin/activate
-          pip install -e . pytest
-          echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+        run: pip install -e . pytest
       - name: Run tests
         run: pytest
