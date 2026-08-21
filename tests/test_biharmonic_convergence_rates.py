@@ -1,3 +1,4 @@
+import os
 from importlib.machinery import SourceFileLoader
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
@@ -16,8 +17,21 @@ def load_module() -> ModuleType:
     assert spec is not None
     assert isinstance(spec.loader, SourceFileLoader)
     module = module_from_spec(spec)
-    spec.loader.exec_module(module)
+    original_fi_provider = os.environ.get("FI_PROVIDER")
+    original_startup_connect = os.environ.get("MPICH_OFI_STARTUP_CONNECT")
+    try:
+        spec.loader.exec_module(module)
+    finally:
+        restore_env("FI_PROVIDER", original_fi_provider)
+        restore_env("MPICH_OFI_STARTUP_CONNECT", original_startup_connect)
     return module
+
+
+def restore_env(name: str, value: str | None) -> None:
+    if value is None:
+        os.environ.pop(name, None)
+    else:
+        os.environ[name] = value
 
 
 @pytest.fixture(scope="module")
