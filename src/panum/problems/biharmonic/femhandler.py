@@ -75,7 +75,7 @@ class FEMHandlerBiharmonic(FEMHandler):
         self.xi.x.scatter_forward()
 
         # Initialize mu from phi
-        mu0: UFLExpr = pn.initial_mu_biharmonic(self.pf, P, msh)
+        pf0, mu0 = pn.initialize_biharmonic(self.pf, self.V)
 
         self.xi.sub(1).interpolate(mu0)
         self.xi.x.scatter_forward()

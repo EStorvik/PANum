@@ -9,8 +9,8 @@ from .core import (
 from .problems.biharmonic import (
     ParametersBiharmonic,
     FEMHandlerBiharmonic,
-    ManufacturedSolutionBiharmonic,
-    initial_mu_biharmonic,
+    AnalyticalSolutionBiharmonic,
+    initialize_biharmonic,
     DifferentialEquationBiharmonic,
 )
 
@@ -22,8 +22,8 @@ __all__ = [
     "TrapezoidalRule",
     "DifferentialEquation",
     "ParametersBiharmonic",
-    "ManufacturedSolutionBiharmonic",
-    "initial_mu_biharmonic",
+    "AnalyticalSolutionBiharmonic",
+    "initialize_biharmonic",
     "FEMHandlerBiharmonic",
     "DifferentialEquationBiharmonic",
 ]

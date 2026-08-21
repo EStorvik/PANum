@@ -1,14 +1,14 @@
 from .parameters import ParametersBiharmonic
 from .femhandler import FEMHandlerBiharmonic
-from .manufactured_solution import ManufacturedSolutionBiharmonic
+from .analytical_solution import AnalyticalSolutionBiharmonic
 from .differential_equation import DifferentialEquationBiharmonic
-from .initial_conditions import initial_mu_biharmonic
+from .initialize_biharmonic import initialize_biharmonic
 
 __all__ = [
     "ParametersBiharmonic",
     "FEMHandlerBiharmonic",
-    "ManufacturedSolutionBiharmonic",
-    "initial_mu_biharmonic",
+    "AnalyticalSolutionBiharmonic",
+    "initialize_biharmonic",
     "BiharmonicWeakForm",
     "TrapezoidalRuleBiharmonic",
     "DifferentialEquationBiharmonic",

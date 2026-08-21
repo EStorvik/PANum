@@ -11,7 +11,7 @@ from mpi4py import MPI
 import panum as pn
 
 
-parameters = pn.ParametersBiharmonic(T=2e-4, num_time_steps=200)
+parameters = pn.ParametersBiharmonic(T=2e-4, num_time_steps=20)
 
 diff_eq = pn.DifferentialEquationBiharmonic()
 
@@ -22,10 +22,10 @@ msh: Mesh = mesh.create_unit_square(
     cell_type=mesh.CellType.triangle,
 )
 
-manufsol = pn.ManufacturedSolutionBiharmonic(parameters)
+analyticalsol = pn.AnalyticalSolutionBiharmonic(parameters)
 
 femhandler = pn.FEMHandlerBiharmonic(
-    msh, parameters=parameters, initialcondition=manufsol.phi0
+    msh, parameters=parameters, initialcondition=analyticalsol.phi0
 )
 
 callbacks = []
@@ -37,8 +37,10 @@ if plot_solution:
     )
     callbacks.append(plot_callback)
 
-timediscretization = pn.TrapezoidalRule(
+timediscretization = pn.ImplicitEuler(
     msh, parameters, femhandler, diff_eq, callbacks
 )
 
 timediscretization()
+
+print(analyticalsol.L2_error(femhandler, parameters.T))

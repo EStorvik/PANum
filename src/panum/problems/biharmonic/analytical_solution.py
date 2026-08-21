@@ -3,8 +3,10 @@ from typing import cast, TYPE_CHECKING, Union
 import numpy as np
 import numpy.typing as npt
 from ufl.core.expr import Expr as UFLExpr
-
+from dolfinx import fem
 from .parameters import ParametersBiharmonic
+from ufl import inner, dx, split
+from mpi4py import MPI
 
 if TYPE_CHECKING:
     from dolfinx.fem import Constant
@@ -13,7 +15,7 @@ ArrayOrFloat = Union[float, npt.NDArray[np.floating]]
 UFLScalar = Union[float, "Constant", UFLExpr]
 
 
-class ManufacturedSolutionBiharmonic:
+class AnalyticalSolutionBiharmonic:
     """ """
 
     def __init__(self, parameters: ParametersBiharmonic) -> None:
@@ -30,12 +32,23 @@ class ManufacturedSolutionBiharmonic:
         self, x: ArrayOrFloat, y: ArrayOrFloat, t: ArrayOrFloat
     ) -> ArrayOrFloat:
         """Evaluate the order parameter phi(x, y, t)."""
-        return cast(
-            ArrayOrFloat,
-            np.exp(-np.pi**4 * t)
-            * np.cos(2 * np.pi * x)
-            * np.cos(2 * np.pi * y),
-        )
+        # decay rate is 4*k**4 for phi = cos(kx)cos(ky), k=2*pi, so that
+        # phi_t = -Delta^2(phi) holds exactly (mu = -Delta(phi), phi_t = Delta(mu))
+        return np.exp(-64 * np.pi**4 * t) * np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y)
 
     def phi0(self, x: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
         return cast(npt.NDArray[np.floating], self.phi(x[0], x[1], self.t0))
+
+
+    def L2_error(self, femhandler, t):
+
+        xi_e = fem.Function(femhandler.V)
+        xi_e.sub(0).interpolate(lambda x: self.phi(x[0], x[1], t))
+        phi_e, _ = split(xi_e)
+        pf = femhandler.pf
+
+        error_form = fem.form(inner(pf - phi_e, pf - phi_e) * dx)
+        local_error = fem.assemble_scalar(error_form)
+        global_error = femhandler.V.mesh.comm.allreduce(local_error, op=MPI.SUM)
+
+        return float(np.sqrt(global_error))
