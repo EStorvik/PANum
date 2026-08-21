@@ -2,20 +2,19 @@ from abc import ABC
 from typing import Any
 
 
-class FEMHandlerBase(ABC):
-    """Base class for finite element handlers.
-
-    Subclasses build the function space(s) and solution `Function`s for a
-    specific PDE. `TimeIntegrator` subclasses, `TimeMarching`, and the
-    visualization callbacks rely on the following attributes being set by
-    subclasses' `__init__`:
-
-    Attributes:
-        V: The (possibly mixed) function space.
-        xi: The current solution `Function`.
-        xi_old: The previous time-step solution `Function`.
-    """
+class FEMHandler(ABC):
 
     V: Any
-    xi: Any
-    xi_old: Any
+    xis: dict
+    xis_old: dict
+    pfs: dict
+    pfs_old: dict
+    mus: dict
+    mus_old: dict
+    eta_pfs: dict
+    eta_mus: dict
+
+    def copy_to_old(self):
+        for i, xi in self.xis.items():
+            self.xis_old[i].x.array[:] = xi.x.array
+            self.xis_old[i].x.scatter_forward()

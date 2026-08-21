@@ -3,7 +3,7 @@ from typing import Any, Dict
 from petsc4py import PETSc
 
 
-class ParametersBase:
+class Parameters:
     """Common simulation parameters shared by all problems: mesh, time stepping
     and the nonlinear solver.
 
@@ -51,6 +51,7 @@ class ParametersBase:
         self.dt = (T - t0) / num_time_steps
         self.tol = tol
         self.max_iter = max_iter
+        self.petsc_prefix = "base_prefix_"
         self.petsc_options: Dict[str, Any] = self._build_petsc_options()
 
     def _build_petsc_options(self) -> Dict[str, Any]:

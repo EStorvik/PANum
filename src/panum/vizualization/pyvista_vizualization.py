@@ -35,7 +35,7 @@ class PyvistaVizualization:
         self.grid.set_active_scalars(name)
         self.p = pvqt.BackgroundPlotter(title=self.name, auto_update=True)
         self.p.add_mesh(self.grid, clim=[0, 1])
-        self.p.view_xy(True)
+        self.p.view_xy(negative=True)
         self.p.add_text(f"time: {t0}", font_size=12, name="timelabel")
 
     def update(self, xi, t):
@@ -101,8 +101,8 @@ class PyvistaPlotCallback:
         )
         self.every = every
 
-    def __call__(self, step, time_integrator, femhandler) -> None:
+    def __call__(self, step, t, femhandler) -> None:
         """Update the plot with the current solution, skipping non-`every` steps."""
         if step % self.every != 0:
             return
-        self.viz.update(femhandler.xi, time_integrator.t.value)
+        self.viz.update(femhandler.xi, t)

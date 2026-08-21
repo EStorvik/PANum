@@ -3,8 +3,7 @@ from .biharmonic import (
     FEMHandlerBiharmonic,
     ManufacturedSolutionBiharmonic,
     initial_mu_biharmonic,
-    BiharmonicWeakForm,
-    TrapezoidalRuleBiharmonic,
+    DifferentialEquationBiharmonic,
 )
 
 __all__ = [
@@ -12,6 +11,5 @@ __all__ = [
     "FEMHandlerBiharmonic",
     "ManufacturedSolutionBiharmonic",
     "initial_mu_biharmonic",
-    "BiharmonicWeakForm",
-    "TrapezoidalRuleBiharmonic",
+    "DifferentialEquationBiharmonic",
 ]

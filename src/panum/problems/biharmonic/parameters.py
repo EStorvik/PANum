@@ -1,7 +1,7 @@
-from ...core.parameters import ParametersBase
+from panum import Parameters
 
 
-class ParametersBiharmonic(ParametersBase):
+class ParametersBiharmonic(Parameters):
     """Parameters for the biharmonic equation solver.
 
     Adds the mobility parameter `m` to the common `ParametersBase` fields.

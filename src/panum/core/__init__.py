@@ -1,11 +1,17 @@
-from .parameters import ParametersBase
-from .femhandler import FEMHandlerBase
-from .time_discretization import TimeIntegrator
-from .time_marching import TimeMarching
+from .parameters import Parameters
+from .femhandler import FEMHandler
+from .time_discretization import (
+    TimeDiscretization,
+    ImplicitEuler,
+    TrapezoidalRule,
+)
+from .differential_equation import DifferentialEquation
 
 __all__ = [
-    "ParametersBase",
-    "FEMHandlerBase",
-    "TimeIntegrator",
-    "TimeMarching",
+    "Parameters",
+    "FEMHandler",
+    "TimeDiscretization",
+    "ImplicitEuler",
+    "TrapezoidalRule",
+    "DifferentialEquation",
 ]

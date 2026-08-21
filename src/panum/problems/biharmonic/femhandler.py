@@ -9,8 +9,7 @@ from ufl import Argument, split, TestFunction
 from ufl.core.expr import Expr as UFLExpr
 import panum as pn
 
-from ...core.femhandler import FEMHandlerBase
-from .parameters import ParametersBiharmonic
+from panum import FEMHandler, Parameters
 
 if TYPE_CHECKING:
     from dolfinx.mesh import Mesh
@@ -20,32 +19,13 @@ InitialCondition = Callable[
 ]
 
 
-class FEMHandlerBiharmonic(FEMHandlerBase):
-    """Finite element handler for the biharmonic (Cahn-Hilliard-type) equation.
-
-    Builds the mixed function space for the phase field ``pf`` and chemical
-    potential ``mu``, and initializes the current and previous time-step
-    solution vectors from a given initial condition for ``pf``, with ``mu``
-    initialized from ``pf`` via :func:`panum.initial_mu_biharmonic`.
-
-    Attributes:
-        V: Mixed function space for ``(pf, mu)``.
-        eta: Test function on the mixed space.
-        eta_pf: Test function component associated with the phase field.
-        eta_mu: Test function component associated with the chemical potential.
-        xi: Current solution function on the mixed space.
-        pf: Phase field component of ``xi``.
-        mu: Chemical potential component of ``xi``.
-        xi_old: Previous time-step solution function on the mixed space.
-        pf_old: Phase field component of ``xi_old``.
-        mu_old: Chemical potential component of ``xi_old``.
-        initialcondition: Callable used to initialize the phase field.
-    """
+class FEMHandlerBiharmonic(FEMHandler):
+    """ """
 
     def __init__(
         self,
         msh: "Mesh",
-        parameters: ParametersBiharmonic,
+        parameters: Parameters,
         initialcondition: InitialCondition,
     ) -> None:
         """Initialize the mixed function space and the initial solution.
@@ -69,17 +49,25 @@ class FEMHandlerBiharmonic(FEMHandlerBase):
         self.eta_pf: UFLExpr
         self.eta_mu: UFLExpr
         self.eta_pf, self.eta_mu = split(self.eta)
+        self.eta_pfs = {0: self.eta_pf}
+        self.eta_mus = {0: self.eta_mu}
 
         # Solution functions
         self.xi: Function = Function(self.V)
         self.pf: UFLExpr
         self.mu: UFLExpr
         self.pf, self.mu = split(self.xi)
+        self.xis = {0: self.xi}
+        self.pfs = {0: self.pf}
+        self.mus = {0: self.mu}
 
         self.xi_old: Function = Function(self.V)
         self.pf_old: UFLExpr
         self.mu_old: UFLExpr
         self.pf_old, self.mu_old = split(self.xi_old)
+        self.xis_old = {0: self.xi_old}
+        self.pfs_old = {0: self.pf_old}
+        self.mus_old = {0: self.mu_old}
 
         # Initialize phi
         self.initialcondition = initialcondition
@@ -92,6 +80,5 @@ class FEMHandlerBiharmonic(FEMHandlerBase):
         self.xi.sub(1).interpolate(mu0)
         self.xi.x.scatter_forward()
 
-        # Copy to old for time stepping
-        self.xi_old.x.array[:] = self.xi.x.array
-        self.xi_old.x.scatter_forward()
+        # Copy to old
+        self.copy_to_old()

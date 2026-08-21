@@ -1,24 +1,31 @@
-from .core import ParametersBase, FEMHandlerBase, TimeIntegrator, TimeMarching
+from .core import (
+    Parameters,
+    FEMHandler,
+    TimeDiscretization,
+    ImplicitEuler,
+    TrapezoidalRule,
+    DifferentialEquation,
+)
 from .problems.biharmonic import (
     ParametersBiharmonic,
     FEMHandlerBiharmonic,
     ManufacturedSolutionBiharmonic,
     initial_mu_biharmonic,
-    BiharmonicWeakForm,
-    TrapezoidalRuleBiharmonic,
+    DifferentialEquationBiharmonic,
 )
 
 __all__ = [
-    "ParametersBase",
-    "FEMHandlerBase",
-    "TimeIntegrator",
-    "TimeMarching",
+    "Parameters",
+    "FEMHandler",
+    "TimeDiscretization",
+    "ImplicitEuler",
+    "TrapezoidalRule",
+    "DifferentialEquation",
     "ParametersBiharmonic",
     "ManufacturedSolutionBiharmonic",
     "initial_mu_biharmonic",
     "FEMHandlerBiharmonic",
-    "BiharmonicWeakForm",
-    "TrapezoidalRuleBiharmonic",
+    "DifferentialEquationBiharmonic",
 ]
 
 # Visualization is an optional extra (requires pyvista/pyvistaqt).
