@@ -1,8 +1,12 @@
+from importlib.machinery import SourceFileLoader
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
+from types import ModuleType
+
+import pytest
 
 
-def load_module():
+def load_module() -> ModuleType:
     module_path = (
         Path(__file__).resolve().parents[1]
         / "examples"
@@ -10,27 +14,37 @@ def load_module():
     )
     spec = spec_from_file_location("biharmonic_convergence_rates", module_path)
     assert spec is not None
-    assert spec.loader is not None
+    assert isinstance(spec.loader, SourceFileLoader)
     module = module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
-def test_compute_convergence_ratios_returns_pairwise_ratios() -> None:
-    module = load_module()
+@pytest.fixture(scope="module")
+def convergence_module() -> ModuleType:
+    return load_module()
 
-    assert module.compute_convergence_ratios([16.0, 4.0, 1.0]) == [4.0, 4.0]
+
+def test_compute_convergence_ratios_returns_pairwise_ratios(
+    convergence_module: ModuleType,
+) -> None:
+
+    assert convergence_module.compute_convergence_ratios([16.0, 4.0, 1.0]) == [
+        4.0,
+        4.0,
+    ]
 
 
-def test_run_convergence_study_uses_each_time_step_once() -> None:
-    module = load_module()
+def test_run_convergence_study_uses_each_time_step_once(
+    convergence_module: ModuleType,
+) -> None:
     calls: list[int] = []
 
     def solve_error(num_time_steps: int) -> float:
         calls.append(num_time_steps)
         return 1.0 / num_time_steps
 
-    errors, convergence_ratios = module.run_convergence_study(
+    errors, convergence_ratios = convergence_module.run_convergence_study(
         [1, 2, 4], solve_error
     )
 
