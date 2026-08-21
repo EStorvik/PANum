@@ -34,11 +34,14 @@ class AnalyticalSolutionBiharmonic:
         """Evaluate the order parameter phi(x, y, t)."""
         # decay rate is 4*k**4 for phi = cos(kx)cos(ky), k=2*pi, so that
         # phi_t = -Delta^2(phi) holds exactly (mu = -Delta(phi), phi_t = Delta(mu))
-        return np.exp(-64 * np.pi**4 * t) * np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y)
+        return (
+            np.exp(-64 * np.pi**4 * t)
+            * np.cos(2 * np.pi * x)
+            * np.cos(2 * np.pi * y)
+        )
 
     def phi0(self, x: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
         return cast(npt.NDArray[np.floating], self.phi(x[0], x[1], self.t0))
-
 
     def L2_error(self, femhandler, t):
 
@@ -49,6 +52,8 @@ class AnalyticalSolutionBiharmonic:
 
         error_form = fem.form(inner(pf - phi_e, pf - phi_e) * dx)
         local_error = fem.assemble_scalar(error_form)
-        global_error = femhandler.V.mesh.comm.allreduce(local_error, op=MPI.SUM)
+        global_error = femhandler.V.mesh.comm.allreduce(
+            local_error, op=MPI.SUM
+        )
 
         return float(np.sqrt(global_error))

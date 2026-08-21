@@ -1,23 +1,19 @@
 """Phase field smoothing from initial condition."""
 
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any
 
 from ufl import grad, inner
-from dolfinx.fem import Function, functionspace
+from dolfinx.fem import Function
 from ufl import TestFunctions, TrialFunctions, dx
 from dolfinx.fem.petsc import LinearProblem
 from ufl.core.expr import Expr as UFLExpr
-
-if TYPE_CHECKING:
-    from dolfinx.mesh import Mesh
 
 
 def initialize_biharmonic(
     pf0: UFLExpr,
     V: Any,
 ) -> Function:
-    """
-    """
+    """ """
     p, m = TrialFunctions(V)
 
     v, w = TestFunctions(V)
