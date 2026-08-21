@@ -27,7 +27,7 @@ jobs:
       - name: Install panum and pytest
         run: |
           python3 -m venv --system-site-packages .venv
-          source .venv/bin/activate
+          . .venv/bin/activate
           pip install -e . pytest
           echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
       - name: Run tests
