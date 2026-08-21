@@ -13,7 +13,7 @@ authors = [
     {name = "Erlend Storvik", email = "erlend.storvik@hvl.no"}
 ]
 dependencies = [
-    numpy,
+    "numpy",
 ]
 
 [project.optional-dependencies]
