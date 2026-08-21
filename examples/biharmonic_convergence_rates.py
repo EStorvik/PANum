@@ -1,21 +1,32 @@
 # Fix MPI/OFI finalization errors on macOS
 import os
+from collections.abc import Callable, Sequence
 
 os.environ["FI_PROVIDER"] = "tcp"
 os.environ["MPICH_OFI_STARTUP_CONNECT"] = "0"
 
-from dolfinx import mesh  # noqa: E402
-from dolfinx.mesh import Mesh  # noqa: E402
-
-from mpi4py import MPI  # noqa: E402
-import panum as pn  # noqa: E402
+DEFAULT_NUM_TIME_STEPS_LIST = [1, 2, 4, 8, 16]
 
 
-num_time_steps_list = [1, 2, 4, 8, 16]
-errors_list = []
+def compute_convergence_ratios(errors: Sequence[float]) -> list[float]:
+    return [errors[i] / errors[i + 1] for i in range(len(errors) - 1)]
 
 
-for num_time_steps in num_time_steps_list:
+def run_convergence_study(
+    num_time_steps_list: Sequence[int],
+    solve_error: Callable[[int], float],
+) -> tuple[list[float], list[float]]:
+    errors_list = [
+        solve_error(num_time_steps) for num_time_steps in num_time_steps_list
+    ]
+    return errors_list, compute_convergence_ratios(errors_list)
+
+
+def solve_biharmonic_error(num_time_steps: int) -> float:
+    from dolfinx import mesh
+    from dolfinx.mesh import Mesh
+    from mpi4py import MPI
+    import panum as pn
 
     parameters = pn.ParametersBiharmonic(
         T=1e-4,
@@ -43,9 +54,20 @@ for num_time_steps in num_time_steps_list:
     )
 
     timediscretization()
-    error = analyticalsol.L2_error(femhandler, parameters.T)
-    print(f"At number of time steps = {num_time_steps} the error is: {error}")
-    errors_list.append(error)
+    return analyticalsol.L2_error(femhandler, parameters.T)
 
-for i in range(len(errors_list) - 1):
-    print(errors_list[i] / errors_list[i + 1])
+
+def main() -> None:
+    errors_list, convergence_ratios = run_convergence_study(
+        DEFAULT_NUM_TIME_STEPS_LIST, solve_biharmonic_error
+    )
+
+    for num_time_steps, error in zip(DEFAULT_NUM_TIME_STEPS_LIST, errors_list):
+        print(f"At number of time steps = {num_time_steps} the error is: {error}")
+
+    for convergence_ratio in convergence_ratios:
+        print(convergence_ratio)
+
+
+if __name__ == "__main__":
+    main()
