@@ -6,10 +6,25 @@ from .biharmonic import (
     DifferentialEquationBiharmonic,
 )
 
+from .cahnhilliard import (
+    ParametersCahnHilliard,
+    DifferentialEquationCahnHilliard,
+    DoubleWell,
+    DoubleWellPolynomial,
+    InitialConditionCahnHilliard,
+    Cross,
+)
+
 __all__ = [
     "ParametersBiharmonic",
     "FEMHandlerBiharmonic",
     "AnalyticalSolutionBiharmonic",
     "initialize_biharmonic",
     "DifferentialEquationBiharmonic",
+    "ParametersCahnHilliard",
+    "DifferentialEquationCahnHilliard",
+    "DoubleWell",
+    "DoubleWellPolynomial",
+    "InitialConditionCahnHilliard",
+    "Cross",
 ]
