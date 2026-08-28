@@ -44,7 +44,6 @@ from .problems.cahnhilliard import (
     ParametersCahnHilliard,
 )
 
-
 __all__ += [
     "DoubleWell",
     "DoubleWellPolynomial",
