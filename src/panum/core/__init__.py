@@ -4,6 +4,7 @@ from .time_discretization import (
     TimeDiscretization,
     ImplicitEuler,
     TrapezoidalRule,
+    ThetaMethod,
 )
 from .differential_equation import DifferentialEquation
 
@@ -14,4 +15,5 @@ __all__ = [
     "ImplicitEuler",
     "TrapezoidalRule",
     "DifferentialEquation",
+    "ThetaMethod",
 ]

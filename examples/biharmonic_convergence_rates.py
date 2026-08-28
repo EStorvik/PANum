@@ -10,7 +10,6 @@ from dolfinx.mesh import Mesh  # noqa: E402
 from mpi4py import MPI  # noqa: E402
 import panum as pn  # noqa: E402
 
-
 num_time_steps_list = [1, 2, 4, 8]
 errors_list = []
 

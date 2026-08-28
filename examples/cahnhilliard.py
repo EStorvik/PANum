@@ -10,7 +10,6 @@ from dolfinx.mesh import Mesh  # noqa: E402
 from mpi4py import MPI  # noqa: E402
 import panum as pn  # noqa: E402
 
-
 parameters = pn.ParametersCahnHilliard(T=2e-4, num_time_steps=20, nx=64, ny=64)
 
 doublewell = pn.DoubleWellPolynomial()
