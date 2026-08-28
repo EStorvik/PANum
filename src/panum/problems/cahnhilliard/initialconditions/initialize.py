@@ -22,7 +22,11 @@ def initialize_cahn_hilliard(
     v, w = TestFunctions(V)
 
     a = inner(p, v) * dx + inner(m, w) * dx
-    L = inner(pf0, v) * dx + inner(grad(pf0), grad(w)) * dx + inner(doublewell.prime(pf0),w)
+    L = (
+        inner(pf0, v) * dx
+        + inner(grad(pf0), grad(w)) * dx
+        + inner(doublewell.prime(pf0), w) * dx
+    )
 
     problem = LinearProblem(
         a,

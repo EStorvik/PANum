@@ -13,6 +13,7 @@ from .cahnhilliard import (
     DoubleWellPolynomial,
     InitialConditionCahnHilliard,
     Cross,
+    FEMHandlerCahnHilliard,
 )
 
 __all__ = [
@@ -27,4 +28,5 @@ __all__ = [
     "DoubleWellPolynomial",
     "InitialConditionCahnHilliard",
     "Cross",
+    "FEMHandlerCahnHilliard",
 ]

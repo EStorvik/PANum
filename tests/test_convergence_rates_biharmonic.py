@@ -13,10 +13,8 @@ import panum as pn  # noqa: E402
 
 def test_convergence_rates_biharmonic() -> None:
 
-
     num_time_steps_list = [1, 2, 4, 8]
     errors_list = []
-
 
     for num_time_steps in num_time_steps_list:
 
@@ -49,6 +47,5 @@ def test_convergence_rates_biharmonic() -> None:
         error = analyticalsol.L2_error(femhandler, parameters.T)
         errors_list.append(error)
 
-
     for i in range(len(errors_list) - 1):
-        assert (errors_list[i] / errors_list[i + 1]-4.0 > -0.1)
+        assert errors_list[i] / errors_list[i + 1] - 4.0 > -0.1

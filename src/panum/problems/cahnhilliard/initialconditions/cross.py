@@ -1,6 +1,7 @@
 from .initialcondition import InitialConditionCahnHilliard
 import numpy as np
 
+
 class Cross(InitialConditionCahnHilliard):
     """Indicator function for a 2D cross centered in the unit square."""
 

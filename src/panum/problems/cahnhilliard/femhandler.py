@@ -1,13 +1,10 @@
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
-import numpy as np
-import numpy.typing as npt
 from basix.ufl import element, mixed_element
 from dolfinx.fem import Function, functionspace
 from dolfinx.fem.function import FunctionSpace
 from ufl import Argument, split, TestFunction
 from ufl.core.expr import Expr as UFLExpr
-import panum as pn
 
 from panum import FEMHandler
 from .parameters import ParametersCahnHilliard
@@ -17,6 +14,8 @@ if TYPE_CHECKING:
 
 from .initialconditions import InitialConditionCahnHilliard
 from .initialconditions import initialize_cahn_hilliard
+from .doublewell import DoubleWell
+
 
 class FEMHandlerCahnHilliard(FEMHandler):
     """ """
@@ -26,6 +25,7 @@ class FEMHandlerCahnHilliard(FEMHandler):
         msh: "Mesh",
         parameters: ParametersCahnHilliard,
         initialcondition: InitialConditionCahnHilliard,
+        doublewell: DoubleWell,
     ) -> None:
         """Initialize the mixed function space and the initial solution.
 
@@ -74,7 +74,9 @@ class FEMHandlerCahnHilliard(FEMHandler):
         self.xi.x.scatter_forward()
 
         # Initialize mu from phi
-        pf0, mu0 = initialize_cahn_hilliard(self.pf, self.V)
+        pf0, mu0 = initialize_cahn_hilliard(
+            pf0=self.pf, doublewell=doublewell, V=self.V
+        )
 
         self.xi.sub(1).interpolate(mu0)
         self.xi.x.scatter_forward()
