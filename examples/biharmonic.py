@@ -10,7 +10,6 @@ from dolfinx.mesh import Mesh  # noqa: E402
 from mpi4py import MPI  # noqa: E402
 import panum as pn  # noqa: E402
 
-
 parameters = pn.ParametersBiharmonic(T=2e-4, num_time_steps=20)
 
 diff_eq = pn.DifferentialEquationBiharmonic()
@@ -37,8 +36,13 @@ if plot_solution:
     )
     callbacks.append(plot_callback)
 
-timediscretization = pn.ImplicitEuler(
-    msh, parameters, femhandler, diff_eq, callbacks
+timediscretization = pn.ThetaMethod(
+    msh,
+    parameters,
+    femhandler,
+    diff_eq,
+    callbacks,
+    theta=0.5,
 )
 
 timediscretization()
