@@ -18,9 +18,14 @@ class DifferentialEquationCahnHilliard(DifferentialEquation):
         doublewell: DoubleWell,
         parameters: ParametersCahnHilliard,
         source: Optional[Any] = None,
+        imex: Optional[str] = None,
     ):
         self.G = {0: self._G}
-        self.H = {0: self._H}
+        self.imex = imex
+        if self.imex is not None:
+            self.H = {0: self._H_imex}
+        else:
+            self.H = {0: self._H}
         self.source = source
         self.doublewell = doublewell
         self.parameters = parameters
@@ -40,3 +45,19 @@ class DifferentialEquationCahnHilliard(DifferentialEquation):
             - self.parameters.ell * inner(grad(pf), grad(eta))
             - (1 / self.parameters.ell) * inner(self.doublewell.prime(pf), eta)
         )
+
+    def _H_imex(self, pfs, pfs_old, mus, eta):
+        pf = pfs[0]
+        pf_old = pfs_old[0]
+        mu = mus[0]
+        if self.imex == "Eyre":
+            return (
+                inner(mu, eta)
+                - self.parameters.ell * inner(grad(pf), grad(eta))
+                - (1 / self.parameters.ell)
+                * inner(
+                    self.doublewell.cprime(pf)
+                    - self.doublewell.eprime(pf_old),
+                    eta,
+                )
+            )
