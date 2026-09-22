@@ -6,6 +6,7 @@ from .core import (
     TrapezoidalRule,
     DifferentialEquation,
     ThetaMethod,
+    IMEXImplicitEuler,
 )
 
 __all__ = [
@@ -16,6 +17,7 @@ __all__ = [
     "TrapezoidalRule",
     "DifferentialEquation",
     "ThetaMethod",
+    "IMEXImplicitEuler",
 ]
 
 
