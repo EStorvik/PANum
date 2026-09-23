@@ -1,10 +1,9 @@
 from typing import TYPE_CHECKING
 
 from basix.ufl import element, mixed_element
-from dolfinx.fem import Function, functionspace
+from dolfinx.fem import functionspace
 from dolfinx.fem.function import FunctionSpace
-from ufl import Argument, split, TestFunction
-from ufl.core.expr import Expr as UFLExpr
+from ufl import split
 
 from panum import FEMHandler
 from .parameters import ParametersCahnHilliard
@@ -46,26 +45,9 @@ class FEMHandlerCahnHilliard(FEMHandler):
 
         # Function spaces
         self.V: FunctionSpace = functionspace(msh, ME)
+        self.stages = stages
 
-        self.generate_functions()
-
-        # Test function on mixed space
-        self.eta_pf, self.eta_mu = split(self.eta)
-        self.eta_us = {0: self.eta_pf}
-        self.eta_vs = {0: self.eta_mu}
-
-        # Solution functions
-        self.pf, self.mu = split(self.xi)
-        self.us = {0: self.pf}
-        self.vs = {0: self.mu}
-
-        for xi in self.xi_stages:
-            u, v = split(xi)
-            self.us_stages.append({0: u})
-            self.vs_stages.append({0: v})
-
-        self.us_old = self.us_stages[0]
-        self.vs_old = self.vs_stages[0]
+        super().__init__()
 
         # Initialize phi
         self.initialcondition = initialcondition
@@ -82,3 +64,25 @@ class FEMHandlerCahnHilliard(FEMHandler):
 
         # Copy to old
         self.copy_to_old()
+
+    def define_fields(self) -> None:
+
+        # Test function on mixed space
+        self.eta_pf, self.eta_mu = split(self.eta)
+        self.eta_us = {0: self.eta_pf}
+        self.eta_vs = {0: self.eta_mu}
+
+        # Solution functions
+        self.pf, self.mu = split(self.xi)
+        self.us = {0: self.pf}
+        self.vs = {0: self.mu}
+
+        self.us_stages = []
+        self.vs_stages = []
+        for xi in self.xi_stages:
+            pf, mu = split(xi)
+            self.us_stages.append({0: pf})
+            self.vs_stages.append({0: mu})
+
+        self.us_old = self.us_stages[0]
+        self.vs_old = self.vs_stages[0]
