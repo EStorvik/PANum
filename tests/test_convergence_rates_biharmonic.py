@@ -39,8 +39,8 @@ def test_convergence_rates_biharmonic() -> None:
         femhandler = pn.FEMHandlerBiharmonic(
             msh, parameters=parameters, initialcondition=analyticalsol.phi0
         )
-        timediscretization = pn.TrapezoidalRule(
-            msh, parameters, femhandler, diff_eq
+        timediscretization = pn.ThetaMethod(
+            msh, parameters, femhandler, diff_eq, theta=0.5
         )
 
         timediscretization()

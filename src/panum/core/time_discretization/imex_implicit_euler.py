@@ -25,22 +25,24 @@ class IMEXImplicitEuler(TimeDiscretization):
         ), "No IMEX method is implemented in the current choice of differential equation"
 
     def _build_variational_form(self):
-        pfs = self.femhandler.pfs
-        mus = self.femhandler.mus
+        us = self.femhandler.us
+        us_old = self.femhandler.us_old
+        eta_us = self.femhandler.eta_us
+        eta_vs = self.femhandler.eta_vs
+        vs = self.femhandler.vs
         dt = self.parameters.dt
 
         self.F = 0
-        for i, pf in pfs.items():
-            pf_old = self.femhandler.pfs_old[i]
-            eta = self.femhandler.eta_pfs[i]
+        for i, u in us.items():
+            u_old = us_old[i]
+            eta = eta_us[i]
             G = self.diff_eq.G[i]
-            self.F += (inner(pf - pf_old, eta) - dt * G(pfs, mus, eta)) * dx
+            self.F += (inner(u - u_old, eta) - dt * G(us, vs, eta)) * dx
 
-        for i in mus:
-            eta = self.femhandler.eta_mus[i]
-            pfs_old = self.femhandler.pfs_old
+        for i in vs:
+            eta = eta_vs[i]
             H = self.diff_eq.H[i]
-            self.F += H(pfs, pfs_old, mus, eta) * dx
+            self.F += H(us, us_old, vs, eta) * dx
 
     def solve_time_step(self):
         self.problem.solve()

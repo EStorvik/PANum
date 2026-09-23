@@ -44,30 +44,25 @@ class FEMHandlerBiharmonic(FEMHandler):
         # Function spaces
         self.V: FunctionSpace = functionspace(msh, ME)
 
+        self.generate_functions()
+
         # Test function on mixed space
-        self.eta: Argument = TestFunction(self.V)
-        self.eta_pf: UFLExpr
-        self.eta_mu: UFLExpr
         self.eta_pf, self.eta_mu = split(self.eta)
-        self.eta_pfs = {0: self.eta_pf}
-        self.eta_mus = {0: self.eta_mu}
+        self.eta_us = {0: self.eta_pf}
+        self.eta_vs = {0: self.eta_mu}
 
         # Solution functions
-        self.xi: Function = Function(self.V)
-        self.pf: UFLExpr
-        self.mu: UFLExpr
         self.pf, self.mu = split(self.xi)
-        self.xis = {0: self.xi}
-        self.pfs = {0: self.pf}
-        self.mus = {0: self.mu}
+        self.us = {0: self.pf}
+        self.vs = {0: self.mu}
 
-        self.xi_old: Function = Function(self.V)
-        self.pf_old: UFLExpr
-        self.mu_old: UFLExpr
-        self.pf_old, self.mu_old = split(self.xi_old)
-        self.xis_old = {0: self.xi_old}
-        self.pfs_old = {0: self.pf_old}
-        self.mus_old = {0: self.mu_old}
+        for xi in self.xi_stages:
+            u, v = split(xi)
+            self.us_stages.append({0: u})
+            self.vs_stages.append({0: v})
+
+        self.us_old = self.us_stages[0]
+        self.vs_old = self.vs_stages[0]
 
         # Initialize phi
         self.initialcondition = initialcondition

@@ -29,30 +29,29 @@ class ThetaMethod(TimeDiscretization):
         )
 
     def _build_variational_form(self):
-        pfs = self.femhandler.pfs
-        mus = self.femhandler.mus
-        pfs_old = self.femhandler.pfs_old
-        mus_old = self.femhandler.mus_old
+        us = self.femhandler.us
+        vs = self.femhandler.vs
+        us_old = self.femhandler.us_old
+        vs_old = self.femhandler.vs_old
         dt = self.parameters.dt
 
         self.F = 0
-        for i, pf in pfs.items():
-            pf_old = pfs_old[i]
-            eta = self.femhandler.eta_pfs[i]
+        for i, u in us.items():
+            eta = self.femhandler.eta_us[i]
             G = self.diff_eq.G[i]
             self.F += (
-                inner(pf - pf_old, eta)
+                inner(u - us_old[i], eta)
                 - dt
                 * (
-                    self.theta * G(pfs, mus, eta)
-                    + (1 - self.theta) * G(pfs_old, mus_old, eta)
+                    self.theta * G(us, vs, eta)
+                    + (1.0 - self.theta) * G(us_old, vs_old, eta)
                 )
             ) * dx
 
-        for i in mus:
-            eta = self.femhandler.eta_mus[i]
+        for i in vs:
+            eta = self.femhandler.eta_vs[i]
             H = self.diff_eq.H[i]
-            self.F += H(pfs, mus, eta) * dx
+            self.F += H(us, vs, eta) * dx
 
     def solve_time_step(self):
         self.problem.solve()

@@ -3,7 +3,6 @@ from .femhandler import FEMHandler
 from .time_discretization import (
     TimeDiscretization,
     ImplicitEuler,
-    TrapezoidalRule,
     ThetaMethod,
     IMEXImplicitEuler,
 )
@@ -14,7 +13,6 @@ __all__ = [
     "FEMHandler",
     "TimeDiscretization",
     "ImplicitEuler",
-    "TrapezoidalRule",
     "DifferentialEquation",
     "ThetaMethod",
     "IMEXImplicitEuler",
