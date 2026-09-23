@@ -16,14 +16,14 @@ class DifferentialEquationBiharmonic(DifferentialEquation):
         self.H = {0: self._H}
         self.source = source
 
-    def _G(self, pfs, mus, eta):
-        mu = mus[0]
+    def _G(self, us, vs, eta):
+        mu = vs[0]
         G = -inner(grad(mu), grad(eta))
         if self.source is not None:
             G += inner(self.source, eta)
         return G
 
-    def _H(self, pfs, mus, eta):
-        pf = pfs[0]
-        mu = mus[0]
+    def _H(self, us, vs, eta):
+        pf = us[0]
+        mu = vs[0]
         return inner(mu, eta) - inner(grad(pf), grad(eta))

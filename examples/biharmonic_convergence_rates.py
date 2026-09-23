@@ -37,8 +37,8 @@ for num_time_steps in num_time_steps_list:
     femhandler = pn.FEMHandlerBiharmonic(
         msh, parameters=parameters, initialcondition=analyticalsol.phi0
     )
-    timediscretization = pn.TrapezoidalRule(
-        msh, parameters, femhandler, diff_eq
+    timediscretization = pn.ThetaMethod(
+        msh, parameters, femhandler, diff_eq, theta=0.5
     )
 
     timediscretization()
