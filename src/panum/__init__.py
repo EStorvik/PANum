@@ -75,6 +75,11 @@ __all__ += [
     "StiffnessTensor",
 ]
 
+from .vizualization import SaveXDMFCallback
+
+__all__ += [
+    "SaveXDMFCallback",
+]
 
 # Visualization is an optional extra (requires pyvista/pyvistaqt).
 try:
@@ -84,8 +89,4 @@ try:
 except ImportError:
     pass
 
-from .vizualization import SaveXDMFCallback
 
-__all__ += [
-    "SaveXDMFCallback",
-]
