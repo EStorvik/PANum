@@ -3,7 +3,6 @@ from .femhandler import FEMHandlerCahnLarche
 from .parameters import ParametersCahnLarche
 from .elasticity import StiffnessTensor
 
-
 __all__ = [
     "DifferentialEquationCahnLarche",
     "FEMHandlerCahnLarche",
