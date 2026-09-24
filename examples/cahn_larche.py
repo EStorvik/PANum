@@ -17,7 +17,10 @@ doublewell = pn.DoubleWellPolynomial()
 stiffness_tensor = pn.StiffnessTensor()
 
 diff_eq = pn.DifferentialEquationCahnLarche(
-    doublewell=doublewell, parameters=parameters, imex = "Eyre", stiffness_tensor= stiffness_tensor
+    doublewell=doublewell,
+    parameters=parameters,
+    imex="Eyre",
+    stiffness_tensor=stiffness_tensor,
 )
 
 msh: Mesh = mesh.create_unit_square(
@@ -43,17 +46,21 @@ callbacks = []
 plot_solution = True
 if plot_solution:
     plot_callback = pn.PyvistaPlotCallback(
-        femhandler, parameters, component = 0, name="phi"
+        femhandler, parameters, component=0, name="phi"
     )
     callbacks.append(plot_callback)
 
 
 output_path = "output/cahn_larche/solution_"
-save_solutions = pn.SaveXDMFCallback({0: output_path+"phi.xdmf", 2: output_path + "u.xdmf"}, msh, femhandler)
+save_solutions = pn.SaveXDMFCallback(
+    {0: output_path + "phi.xdmf", 2: output_path + "u.xdmf"}, msh, femhandler
+)
 callbacks.append(save_solutions)
+
 
 def verbosity_callback(step, t, femhandler):
     print(f"At time step {step} and time {t}")
+
 
 callbacks.append(verbosity_callback)
 

@@ -2,7 +2,7 @@ from panum import DirichletBC
 import numpy as np
 
 
-class DirichletZeroFullBoundary():
+class DirichletZeroFullBoundary:
 
     def __init__(self):
         self.value = lambda x: np.zeros((2, x.shape[1]))
@@ -16,12 +16,5 @@ class DirichletZeroFullBoundary():
 
     def __call__(self, msh, V, u):
         condition = {0: [self.full_boundary, V, u, self.value]}
-        dbc = DirichletBC(msh = msh, condition = condition)
+        dbc = DirichletBC(msh=msh, condition=condition)
         return dbc.bcs
-
-
-
-
-
-
-

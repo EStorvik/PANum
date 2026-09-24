@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from collections.abc import Mapping
 from dolfinx.fem import Function
 from ufl import Argument, TestFunction
-from typing import Optional
 
 
 class FEMHandler(ABC):

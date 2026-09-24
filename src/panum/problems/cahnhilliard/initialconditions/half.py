@@ -15,5 +15,5 @@ class Half(InitialConditionCahnHilliard):
             x (np.ndarray): Array of shape (2, n).
         """
         values = np.zeros(x.shape[1])
-        values[x[0]<0.5] = 1.0
+        values[x[0] < 0.5] = 1.0
         return values

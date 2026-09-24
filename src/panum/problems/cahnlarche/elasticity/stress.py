@@ -1,14 +1,13 @@
 from dolfinx.fem import Function
 
 from ufl import indices, as_tensor
-
-from .stiffness_tensor import StiffnessTensor
+from typing import Callable
 
 
 class Stress:
 
     def __call__(
-        self, stiffness_tensor, strain: Function, pf: Function
+        self, stiffness_tensor: Callable, strain: Function, pf: Function
     ) -> Function:
         """
         Evaluate the heterogeneous and anisotropic stiffness tensor.

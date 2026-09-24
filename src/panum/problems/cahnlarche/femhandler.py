@@ -13,8 +13,13 @@ if TYPE_CHECKING:
 
 
 from ..cahnhilliard.doublewell import DoubleWell
-from ..cahnhilliard.initialconditions import InitialConditionCahnHilliard, initialize_cahn_hilliard
-from .boundaryconditions.full_zero_dirichlet_u_bc import DirichletZeroFullBoundary
+from ..cahnhilliard.initialconditions import (
+    InitialConditionCahnHilliard,
+)
+from .boundaryconditions.full_zero_dirichlet_u_bc import (
+    DirichletZeroFullBoundary,
+)
+
 
 class FEMHandlerCahnLarche(FEMHandler):
     """ """
@@ -25,7 +30,7 @@ class FEMHandlerCahnLarche(FEMHandler):
         parameters: ParametersCahnLarche,
         initialcondition: InitialConditionCahnHilliard,
         doublewell: DoubleWell,
-        boundary_condition = DirichletZeroFullBoundary(),
+        boundary_condition=DirichletZeroFullBoundary(),
         stages: int = 1,
     ) -> None:
         """Initialize the mixed function space and the initial solution.
@@ -102,5 +107,3 @@ class FEMHandlerCahnLarche(FEMHandler):
 
         self.us_old = self.us_stages[0]
         self.vs_old = self.vs_stages[0]
-
-

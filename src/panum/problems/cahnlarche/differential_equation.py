@@ -1,7 +1,7 @@
 from typing import Optional, Any
 
 from ..cahnhilliard.doublewell import DoubleWell
-from  panum import DifferentialEquation
+from panum import DifferentialEquation
 from .parameters import ParametersCahnLarche
 from .elasticity.stiffness_tensor import StiffnessTensor
 from .elasticity.stress import Stress
@@ -57,22 +57,28 @@ class DifferentialEquationCahnLarche(DifferentialEquation):
                 * inner(self.doublewell.prime(pf), eta)
             )
             - 0.5
-            * inner(inner(
-                sym(grad(u)) - self.swelling(pf),
-                self.stress(
-                    stiffness_tensor=self.stiffness_tensor.prime,
-                    strain=sym(grad(u)) - self.swelling(pf),
-                    pf=pf,
+            * inner(
+                inner(
+                    sym(grad(u)) - self.swelling(pf),
+                    self.stress(
+                        stiffness_tensor=self.stiffness_tensor.prime,
+                        strain=sym(grad(u)) - self.swelling(pf),
+                        pf=pf,
+                    ),
                 ),
-            ), eta)
-            + inner(inner(
-                self.parameters.swelling_parameter * Identity(2),
-                self.stress(
-                    stiffness_tensor=self.stiffness_tensor,
-                    strain=sym(grad(u)) - self.swelling(pf),
-                    pf=pf,
+                eta,
+            )
+            + inner(
+                inner(
+                    self.parameters.swelling_parameter * Identity(2),
+                    self.stress(
+                        stiffness_tensor=self.stiffness_tensor,
+                        strain=sym(grad(u)) - self.swelling(pf),
+                        pf=pf,
+                    ),
                 ),
-            ), eta)
+                eta,
+            )
         )
 
     # NOTE: Not working atm
@@ -93,22 +99,28 @@ class DifferentialEquationCahnLarche(DifferentialEquation):
                     eta,
                 )
                 - 0.5
-                * inner(inner(
-                    sym(grad(u_old)) - self.swelling(pf_old),
-                    self.stress(
-                        stiffness_tensor=self.stiffness_tensor.prime,
-                        strain=sym(grad(u_old)) - self.swelling(pf_old),
-                        pf=pf_old,
+                * inner(
+                    inner(
+                        sym(grad(u_old)) - self.swelling(pf_old),
+                        self.stress(
+                            stiffness_tensor=self.stiffness_tensor.prime,
+                            strain=sym(grad(u_old)) - self.swelling(pf_old),
+                            pf=pf_old,
+                        ),
                     ),
-                ), eta)
-                + inner(inner(
-                    self.parameters.swelling_parameter * Identity(2),
-                    self.stress(
-                        stiffness_tensor=self.stiffness_tensor,
-                        strain=sym(grad(u)) - self.swelling(pf),
-                        pf=pf_old,
+                    eta,
+                )
+                + inner(
+                    inner(
+                        self.parameters.swelling_parameter * Identity(2),
+                        self.stress(
+                            stiffness_tensor=self.stiffness_tensor,
+                            strain=sym(grad(u)) - self.swelling(pf),
+                            pf=pf_old,
+                        ),
                     ),
-                ), eta)
+                    eta,
+                )
             )
 
     def _H_bu(self, us, vs, eta):
