@@ -6,6 +6,7 @@ from .core import (
     DifferentialEquation,
     ThetaMethod,
     IMEXImplicitEuler,
+    DirichletBC,
 )
 
 __all__ = [
@@ -16,6 +17,7 @@ __all__ = [
     "DifferentialEquation",
     "ThetaMethod",
     "IMEXImplicitEuler",
+    "DirichletBC",
 ]
 
 
@@ -40,6 +42,7 @@ from .problems.cahnhilliard import (
     DoubleWellPolynomial,
     InitialConditionCahnHilliard,
     Cross,
+    Half,
     initialize_cahn_hilliard,
     DifferentialEquationCahnHilliard,
     FEMHandlerCahnHilliard,
@@ -51,10 +54,31 @@ __all__ += [
     "DoubleWellPolynomial",
     "InitialConditionCahnHilliard",
     "Cross",
+    "Half",
     "initialize_cahn_hilliard",
     "DifferentialEquationCahnHilliard",
     "FEMHandlerCahnHilliard",
     "ParametersCahnHilliard",
+]
+
+from .problems.cahnlarche import (
+    ParametersCahnLarche,
+    DifferentialEquationCahnLarche,
+    FEMHandlerCahnLarche,
+    StiffnessTensor,
+)
+
+__all__ += [
+    "ParametersCahnLarche",
+    "DifferentialEquationCahnLarche",
+    "FEMHandlerCahnLarche",
+    "StiffnessTensor",
+]
+
+from .vizualization import SaveXDMFCallback
+
+__all__ += [
+    "SaveXDMFCallback",
 ]
 
 # Visualization is an optional extra (requires pyvista/pyvistaqt).

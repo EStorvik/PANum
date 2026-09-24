@@ -31,6 +31,8 @@ class FEMHandler(ABC):
         self.define_fields()
         self.validate_fields()
 
+        self.bcs = []
+
     @abstractmethod
     def define_fields(self) -> None:
         """Populate us/vs dictionaries, eta dictionaries, and stage views."""

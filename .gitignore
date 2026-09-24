@@ -219,3 +219,6 @@ __marimo__/
 
 
 .vscode/
+
+# output folder
+output/

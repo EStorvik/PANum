@@ -44,6 +44,7 @@ class TimeDiscretization(ABC):
         self.problem: NonlinearProblem = NonlinearProblem(
             self.F,
             femhandler.xi,
+            bcs=femhandler.bcs,
             petsc_options_prefix=parameters.petsc_prefix,
             petsc_options=parameters.petsc_options,
         )
