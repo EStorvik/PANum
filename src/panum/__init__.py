@@ -88,5 +88,3 @@ try:
     __all__ += ["PyvistaVizualization", "PyvistaPlotCallback"]
 except ImportError:
     pass
-
-
