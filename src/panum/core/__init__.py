@@ -7,6 +7,7 @@ from .time_discretization import (
     IMEXImplicitEuler,
 )
 from .differential_equation import DifferentialEquation
+from .dirichletbc import DirichletBC
 
 __all__ = [
     "Parameters",
@@ -16,4 +17,5 @@ __all__ = [
     "DifferentialEquation",
     "ThetaMethod",
     "IMEXImplicitEuler",
+    "DirichletBC",
 ]

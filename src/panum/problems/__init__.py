@@ -13,7 +13,15 @@ from .cahnhilliard import (
     DoubleWellPolynomial,
     InitialConditionCahnHilliard,
     Cross,
+    Half,
     FEMHandlerCahnHilliard,
+)
+
+from .cahnlarche import (
+    ParametersCahnLarche,
+    DifferentialEquationCahnLarche,
+    FEMHandlerCahnLarche,
+    StiffnessTensor,
 )
 
 __all__ = [
@@ -28,5 +36,10 @@ __all__ = [
     "DoubleWellPolynomial",
     "InitialConditionCahnHilliard",
     "Cross",
+    "Half",
     "FEMHandlerCahnHilliard",
+    "ParametersCahnLarche",
+    "DifferentialEquationCahnLarche",
+    "FEMHandlerCahnLarche",
+    "StiffnessTensor",
 ]

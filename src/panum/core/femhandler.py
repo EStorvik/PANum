@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Mapping
 from dolfinx.fem import Function
 from ufl import Argument, TestFunction
+from typing import Optional
 
 
 class FEMHandler(ABC):
@@ -30,6 +31,8 @@ class FEMHandler(ABC):
         # Subclasses must wire split fields and stage dictionaries.
         self.define_fields()
         self.validate_fields()
+
+        self.bcs = []
 
     @abstractmethod
     def define_fields(self) -> None:

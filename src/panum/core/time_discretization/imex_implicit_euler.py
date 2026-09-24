@@ -30,6 +30,7 @@ class IMEXImplicitEuler(TimeDiscretization):
         eta_us = self.femhandler.eta_us
         eta_vs = self.femhandler.eta_vs
         vs = self.femhandler.vs
+        vs_old = self.femhandler.vs_old
         dt = self.parameters.dt
 
         self.F = 0
@@ -42,7 +43,7 @@ class IMEXImplicitEuler(TimeDiscretization):
         for i in vs:
             eta = eta_vs[i]
             H = self.diff_eq.H[i]
-            self.F += H(us, us_old, vs, eta) * dx
+            self.F += H(us, us_old, vs, vs_old, eta) * dx
 
     def solve_time_step(self):
         self.problem.solve()

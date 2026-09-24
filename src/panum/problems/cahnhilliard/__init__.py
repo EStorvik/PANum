@@ -5,6 +5,7 @@ from .initialconditions import (
     InitialConditionCahnHilliard,
     Cross,
     initialize_cahn_hilliard,
+    Half,
 )
 from .femhandler import FEMHandlerCahnHilliard
 
@@ -15,6 +16,7 @@ __all__ = [
     "DoubleWellPolynomial",
     "InitialConditionCahnHilliard",
     "Cross",
+    "Half",
     "initialize_cahn_hilliard",
     "FEMHandlerCahnHilliard",
 ]

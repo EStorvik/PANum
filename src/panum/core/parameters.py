@@ -48,7 +48,7 @@ class Parameters:
         self.num_time_steps = num_time_steps
         self.T = T
         self.t0 = t0
-        self.dt = (T - t0) / num_time_steps
+        self.dt: float = (T - t0) / num_time_steps
         self.tol = tol
         self.max_iter = max_iter
         self.petsc_prefix = "base_prefix_"
