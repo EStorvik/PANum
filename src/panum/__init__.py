@@ -83,3 +83,8 @@ try:
     __all__ += ["PyvistaVizualization", "PyvistaPlotCallback"]
 except ImportError:
     pass
+
+from .vizualization import SaveXDMFCallback
+__all__ += [
+    "SaveXDMFCallback",
+]
