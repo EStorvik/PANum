@@ -46,7 +46,7 @@ class DifferentialEquationCahnHilliard(DifferentialEquation):
             - (1 / self.parameters.ell) * inner(self.doublewell.prime(pf), eta)
         )
 
-    def _H_imex(self, us, us_old, vs, eta):
+    def _H_imex(self, us, us_old, vs, vs_old, eta):
         pf = us[0]
         pf_old = us_old[0]
         mu = vs[0]

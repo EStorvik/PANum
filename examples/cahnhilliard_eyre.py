@@ -10,7 +10,9 @@ from dolfinx.mesh import Mesh  # noqa: E402
 from mpi4py import MPI  # noqa: E402
 import panum as pn  # noqa: E402
 
-parameters = pn.ParametersCahnHilliard(T=2e-4, num_time_steps=20, nx=64, ny=64)
+parameters = pn.ParametersCahnHilliard(
+    T=1e-1, num_time_steps=200, nx=64, ny=64, ell=0.05
+)
 
 doublewell = pn.DoubleWellPolynomial()
 
@@ -26,11 +28,12 @@ msh: Mesh = mesh.create_unit_square(
 )
 
 cross_initialcondition = pn.Cross(width=0.3)
+random_initialcondition = pn.Random(mean=0.75, std=0.1, seed=42)
 
 femhandler = pn.FEMHandlerCahnHilliard(
     msh,
     parameters=parameters,
-    initialcondition=cross_initialcondition,
+    initialcondition=random_initialcondition,
     doublewell=doublewell,
 )
 

@@ -15,6 +15,7 @@ from .cahnhilliard import (
     Cross,
     Half,
     FEMHandlerCahnHilliard,
+    Random,
 )
 
 from .cahnlarche import (
@@ -37,6 +38,7 @@ __all__ = [
     "InitialConditionCahnHilliard",
     "Cross",
     "Half",
+    "Random",
     "FEMHandlerCahnHilliard",
     "ParametersCahnLarche",
     "DifferentialEquationCahnLarche",

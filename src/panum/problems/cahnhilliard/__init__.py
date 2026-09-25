@@ -4,6 +4,7 @@ from .doublewell import DoubleWell, DoubleWellPolynomial
 from .initialconditions import (
     InitialConditionCahnHilliard,
     Cross,
+    Random,
     initialize_cahn_hilliard,
     Half,
 )
@@ -17,6 +18,7 @@ __all__ = [
     "InitialConditionCahnHilliard",
     "Cross",
     "Half",
+    "Random",
     "initialize_cahn_hilliard",
     "FEMHandlerCahnHilliard",
 ]
